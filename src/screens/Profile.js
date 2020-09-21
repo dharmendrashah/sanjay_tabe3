@@ -67,13 +67,14 @@ class Profile extends Component {
         <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={styles.iconStyle}>
           <Icon name="arrow-left" type='material-community' size={30} color={theme.BACK_ARROW} />
         </TouchableOpacity>
-          <View style={styles.imageContainer}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate("Edit", {refresh:true})} style={styles.imageContainer}>
             <Image
               style={styles.userImage}
               resizeMode='cover'
               source={userData.image !== undefined ? {uri: linkImage(userData.image)} : require('@assets/profile2.png')}  >
             </Image>
-          </View>
+            <Icon name={"edit"} />
+          </TouchableOpacity>
           <View style={styles.userLoginInfo}>
           <Text style={styles.userLoginInfoText1}>{userData.name}</Text>
           <Text style={styles.userLoginInfoText2}>{userData.email_id}</Text>
@@ -161,10 +162,11 @@ const styles = StyleSheet.create({
   imageContainer: {
     height: responsiveWidth(30),
     width: responsiveWidth(30),
-    backgroundColor: 'grey',
+    backgroundColor: 'transparent',
     borderRadius: responsiveWidth(15),
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection:'row'
   },
   userImage: {
     height: responsiveWidth(28),

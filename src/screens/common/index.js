@@ -7,4 +7,5 @@ import Create from './Create';
 import Header from './Header';
 import DefButton from './button';
 import HomeIcon from './HomeIcon';
-export { Loader, InputBox, ToastAlert, customAlert, Join, Create,Header, DefButton, HomeIcon};
+import Options from './options';
+export { Loader, InputBox, ToastAlert, customAlert, Join, Create,Header, DefButton, HomeIcon, Options};

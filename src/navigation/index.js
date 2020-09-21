@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import Home from "@screens/Home";
 import modules from "@screens";
-import { Login, Register, ForgetPassword } from "@auth";
+import { Login, Register, ForgetPassword, Edit } from "@auth";
 import Profile from '@screens/Profile'
 import MeetingHistory from '@screens/MeetingHistory'
 import SocialLogin from '@screens/SocialLogin'
@@ -26,7 +26,7 @@ const AnimationConfigs = {
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gesturesEnabled: false,
-        animationEnabled:false//
+        animationEnabled:false
     },
 };
 const Stack = createStackNavigator();
@@ -36,6 +36,7 @@ function Router() {
             <Stack.Navigator initialRouteName={"modules"} headerMode="none">                
                 <Stack.Screen name="Home" component={Home} />
                 <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Edit" component={Edit} />
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
                 <Stack.Screen name="Profile" component={Profile} />

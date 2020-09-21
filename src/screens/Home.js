@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   TouchableHighlight, SafeAreaView, StyleSheet,
   ImageBackground, TouchableOpacity, View, Text, Image,
-  ScrollView, StatusBar, BackHandler, FlatList, RefreshControl, Modal, ToastAndroid,
+  ScrollView, StatusBar, BackHandler, FlatList, RefreshControl, Modal, ToastAndroid, Dimensions
 } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
@@ -14,6 +14,9 @@ import { Participant_name, acceptMeetings, rejectMeetings, linkImage,specialLog,
 import moment from 'moment';
 import theme from '@theme';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import Options from './common/options';
+const dh = Dimensions.get('window').height;
+const dw = Dimensions.get('window').width;
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -42,7 +45,8 @@ class Home extends Component {
       meetingsNextDay: [],
       refreshing:false,
       modal:false,
-      currentAgenda: ''
+      currentAgenda: '',
+      opt:false
     };
     this.loginStatus();
     this.meetings();
@@ -262,7 +266,15 @@ class Home extends Component {
     this.props.navigation.navigate('modules', {refresh:true});
   }
 
+  async cb(){
+   const a = { REGISTERFUNC:this.register,
+    LOGINFUNC:this.login,
+    FORGOTFUNC:this.forget,
+    SOCIALFUNC:this.social
+   }
 
+   return Promise<Function> a;
+  }
 
   async accept(id){
     const a = await acceptMeetings(id);
@@ -278,12 +290,17 @@ class Home extends Component {
     return true;
   }
 
+  async optio(){
+    this.setState({opt:true});
+    return true;
+  }
+
 
   
 
 
   allTodayMeetings = () => {
-    const {meetingsToday} = this.state;
+    const {meetingsToday, opt} = this.state;
     specialLog(Object.keys(meetingsToday).length);
     if(Object.keys(meetingsToday).length !== 0){
       return (
@@ -471,10 +488,11 @@ class Home extends Component {
 
   render() {
     const { getUserProfile, userImagePath, todayMeeting, nextMeeting } = this.props;
-    const {isLoggedIn, facebookData, userData, meetingsToday, meetingsNextDay} = this.state;
+    const {isLoggedIn, facebookData, userData, meetingsToday, meetingsNextDay, opt} = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
+      
         <ImageBackground source={theme.BACKGROUND_IMAGE} style={styles.background}>
           <StatusBar translucent={true} backgroundColor={theme.STATUS} />
           {
@@ -500,11 +518,11 @@ class Home extends Component {
             </View>
 
             <View style={styles.profileOption}>
-              <Image
-                style={styles.profileOptionImage}
-                resizeMode='contain'
-                source={require('@assets/star.png')} >
-              </Image>
+            {/* <Icon style={{zIndex:99999, marginTop:-10}} onPress={() => {
+                console.log("--------------start")
+                var a = opt == true ? false : true;
+                this.setState({opt:a});
+              }} name={opt == true ? "close" : "settings"}/> */}
               <TouchableHighlight onPress={() => {
                 this.props.navigation.navigate("Profile")
               }}
@@ -515,14 +533,30 @@ class Home extends Component {
               </TouchableHighlight>
             </View>
             </View>
-             : 
-             <View style={[styles.logoView, {}]}>
+             : <View onPress={()=>console.log("works")} style={[styles.logoView, {}]}>
+             
               <Text style={{ fontSize: RFValue(30), fontWeight: 'bold' }}>Dashboard</Text>
-            </View>
+              <View style={{marginStart:"20%", marginTop:10, backgroundColor:"#fff"}}>
+              
+              <Icon style={{zIndex:99999, marginTop:-10}} onPress={() => {
+                console.log("--------------start")
+                var a = opt == true ? false : true;
+                this.setState({opt:a});
+              }} name={opt == true ? "close" : "settings"}/>
+             
+               
+              </View>
+              </View>
+            
           }
 
 
-    <View style={{ height: '100%', marginTop: RFValue(-30) }}>
+         
+
+    <View style={{ height: '100%', marginTop: RFValue(-50) }}>
+    
+    {opt && <Options {...this.props} callbacks={async() => await this.cb}/>}
+
         <ScrollView style={{ height:'100%' }} 
         refreshControl={
           <RefreshControl refreshing={this.state.refreshing} onRefresh={() => {
@@ -530,6 +564,7 @@ class Home extends Component {
           }} />
         }
         >
+
           <View style={styles.optionMainView}>
             <View style={styles.row}>
             <HomeIcon image={require('@assets/meeting.png')} title={"Schedule Meeting"} callback={() => { this.schedule() }}/>
@@ -539,21 +574,24 @@ class Home extends Component {
             <View style={styles.row}>
            
             <HomeIcon image={require('@assets/conference.png')} title={"Meeting History"} callback={() => { this.props.navigation.navigate("MeetingHistory") }}/>
-            <HomeIcon image={require('@assets/add.png')} title={"Register"} callback={() => { this.register() }}/>
-            <HomeIcon image={require('@assets/user1.png')} title={"Login"} callback={() => { this.login() }}/>
+            <HomeIcon image={require('@assets/news.png')} title={"News"} callback={() => { this.News() }}/>
+            <HomeIcon image={require('@assets/videos.png')} title={"Videos"} callback={() => { this.Videos() }}/>
+            
+
+            {/* <HomeIcon image={require('@assets/add.png')} title={"Register"} callback={() => { this.register() }}/> */}
+            {/* <HomeIcon image={require('@assets/user1.png')} title={"Login"} callback={() => { this.login() }}/> */}
             </View>
-            <View style={styles.row}>
+
+            {/* <View style={styles.row}>
             <HomeIcon image={require('@assets/key.png')} title={"Forget Password"} callback={() => { this.forget() }}/>
             <HomeIcon image={require('@assets/calendar.png')} title={"Social"} callback={() => { this.social() }}/>
-            <HomeIcon image={require('@assets/news.png')} title={"News"} callback={() => { this.News() }}/>
             </View>
             
             <View style={styles.row}>
             
-            <HomeIcon image={require('@assets/videos.png')} title={"Videos"} callback={() => { this.Videos() }}/>
             <HomeIcon empty/>
             <HomeIcon empty/>
-            </View>
+            </View> */}
 
             {/* custom end */}
             <View style={styles.meetingContainer}>
@@ -726,6 +764,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginTop: "20%",
+    zIndex:1
   },
   meetingView: {
     marginTop: '20%',
@@ -773,12 +813,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   logoView: {
-    height: '15%',
-    width: '100%',
+    height: '100%',
+    width: '120%',
     backgroundColor: 'transparent',
-    alignItems: 'center',
-    alignContent: 'center',
     marginTop: RFValue(10),
+    flex:1,
+    flexDirection:'row',
+    paddingStart: "35%",
+    zIndex:10
+    
   },
   profileClick: {
     height: 30,

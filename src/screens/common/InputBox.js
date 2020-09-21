@@ -6,7 +6,7 @@ import theme from '@theme';
 import { color } from 'react-native-reanimated';
 export default class InputBox extends React.Component {
     render() {
-        const { icon, onChangeText, name, fontType, keyboardType, secureTextEntry } = this.props;
+        const { val, notEditable, icon, onChangeText, name, fontType, keyboardType, secureTextEntry } = this.props;
         return (
             <View style={styles.searchSection}>
                 {/* <Icon style={styles.searchIcon} name={icon} type={fontType ? fontType : 'font-awesome'} size={25} color="#595959" /> */}
@@ -18,6 +18,8 @@ export default class InputBox extends React.Component {
                     underlineColorAndroid="transparent"
                     keyboardType={keyboardType ? keyboardType : ''}
                     secureTextEntry={secureTextEntry ? true : false}
+                    value={val ? val : ""}
+                    editable={notEditable ? false : true}
                 />
             </View>
         );

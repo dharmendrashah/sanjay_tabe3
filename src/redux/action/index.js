@@ -8,6 +8,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {LINK} from '../../../src/config';
 import {View, Text} from 'react-native';
 
+import ImgToBase64 from 'react-native-image-base64';
+
 
 const fetchUserData = (id, success) => {
     return async dispatch => {
@@ -349,4 +351,63 @@ const Participant_name = () => {
    return null;
   }
 
-export { acceptMeetings, rejectMeetings, Participant_name, specialLog, linkImage, todayMeetings, authUser, currentDate, nextDayMeetings, getToken, createMeeting,getMeetings, fetchUserData, resetData, fetchScheduleMeeting, deleteScheduleMeeting, checkUser, UserRegister, login, loginCustom, forgotPassword, getUserData };
+
+  async function getBase64Image(img) {
+    var a = await ImgToBase64.getBase64String(img);
+    console.log("image required", a);
+  return a;
+ 
+}
+
+
+const updateProfileUser = async (data) => {
+    console.log(data);
+
+    var ui = await getToken() !== null ? await getToken() : 0;
+    var l = LINK+"api/update-profile";
+    // var x = new FormData();
+    // x.append("token_code", ui);
+    // x.append("mobile_no", data.mobile_no);
+    // // x.append("user_id", data.user_id);
+    // x.append("name", data.name);
+    // x.append("userfile", await getBase64Image(data.userfile), "userimage.jpg");
+    // console.log("get all form data", x);
+    // var a = await fetch(l, {method:"POST", body:x});
+    // var b = await a.status == 200 ? await a.text() : "";
+    // console.log("response", b);
+    // return b;
+
+    const a = [
+        { name : 'userfile', filename : data.userfile ? 'userImage.jpeg' : "", data: data.userfile ? await getBase64Image(data.userfile) : ""},
+        // elements without property `filename` will be sent as plain text
+        { name : 'name', data : data.name},
+        { name : 'user_id', data : data.user_id},
+        { name: 'mobile_no', data : data.mobile_no },
+        { name : 'token_code', data : ui },
+        { name : 'address', data : data.address },
+        { name : 'pincode', data : data.pincode },
+      ];
+
+      console.log("fetch data => ", a);
+
+    const h = await RNFetchBlob.fetch('POST',LINK + 'api/update-profile',{
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          authorization: 'Basic YWRtaW46MTIzNA==',
+          Authorizationkeyfortoken:
+            'eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJjb25zdW1lcktleSI6IlVuOG81UjMwOTMiLCJpc3N1ZWRBdCI6IjIwMTctMDQtMDVUMTU6MjU6MDMrMDAwMCIsImZpcnN0TmFtZSI6IkZhcmhhZCIsInVzZXJFbWFpbCI6InBvbG9rMDE3MTdAZ21haWwuY29tIiwidXNlcklkIjoiMSIsInVzZXJUeXBlIjoiMSJ9.EuJPSGHVedZscFj4mARHObzrnxgaYouvcwO5c94Po4U',
+          accept: '*/*',
+          // here's the body you're going to send, should be a BASE64 encoded string
+          // (you can use "base64"(refer to the library 'mathiasbynens/base64') APIs to make one).
+          // The data will be converted to "byte array"(say, blob) before request sent.
+        }, a);
+
+        console.log(h.data);
+
+
+    return JSON.parse(h.data);
+  }
+
+
+
+export { updateProfileUser, acceptMeetings, rejectMeetings, Participant_name, specialLog, linkImage, todayMeetings, authUser, currentDate, nextDayMeetings, getToken, createMeeting,getMeetings, fetchUserData, resetData, fetchScheduleMeeting, deleteScheduleMeeting, checkUser, UserRegister, login, loginCustom, forgotPassword, getUserData };
